@@ -1,6 +1,12 @@
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.SourceType;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 /**
@@ -11,10 +17,16 @@ public class MainPage {
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
+        driver.get("https://www.wrike.com");
     }
 
     public void clickFreeTrialButton() {
-        driver.findElement(By.xpath("//*[contains(@class,'wg-header__free-trial-button wg-btn wg-btn--green')]")).click();
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebElement freeTrialButton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//html/body/div[1]/header/div[3]/div[2]/div/div/div[2]/div/form/button"))
+
+        );
+        freeTrialButton.click();
     }
     public void setTrialEmail(String email) {
         driver.findElement(By.xpath("//*[contains(@class,'wg-input modal-form-trial__input')]")).sendKeys(email);
@@ -23,10 +35,6 @@ public class MainPage {
     public void clickCreateMyWrikeAccount() {
         driver.findElement(By.xpath("//*[contains(@class,'wg-btn wg-btn--blue modal-form-trial__submit')]")).click();
     }
-
-    /*public void assertionResend() {
-        assertTrue(driver.getCurrentUrl().equals("https://www.wrike.com/resend/"));
-    }*/
 
     public void clickAnswerOne(int val) { // val = 1 2
         driver.findElement(By.xpath("//html/body/div[1]/main/div/div/div[2]/div/div[2]/div/form/div[1]/label[" + val + "]/button")).click();
@@ -43,7 +51,8 @@ public class MainPage {
     public void clickAnswerThreeOther(String str) {
         WebElement otherAnswer = driver.findElement(By.xpath("//html/body/div[1]/main/div/div/div[2]/div/div[2]/div/form/div[3]/label[3]/button"));
         otherAnswer.click();
-        otherAnswer.sendKeys(str);
+        WebElement otherInput = driver.findElement(By.xpath("//html/body/div[1]/main/div/div/div[2]/div/div[2]/div/form/div[3]/label[3]/button/span/input"));
+        otherInput.sendKeys(str);
     }
 
     public void clickSubmiteResults() {
@@ -51,7 +60,7 @@ public class MainPage {
     }
 
     public boolean isSuccessVisible() {
-        WebElement success = driver.findElement(By.xpath("//*[contains(@class,'wg-input modal-form-trial__input')]"));
+        WebElement success = driver.findElement(By.xpath("//html/body/div[1]/main/div/div/div[2]/div/div[2]/div/div"));
         return !"none".equals(success.getCssValue("display"));
     }
 
@@ -60,8 +69,19 @@ public class MainPage {
     }
 
     public boolean isAgainVisible() {
-        WebElement success = driver.findElement(By.xpath("//*[contains(@class,'again')]"));
+        WebElement success = driver.findElement(By.xpath("//html/body/div[1]/main/div/div/div[2]/div/div[1]/p[1]/span"));
+
         return !"none".equals(success.getCssValue("display"));
+    }
+
+    public boolean isFollowUsVisible() {
+        try{
+            WebElement followUs = driver.findElement(By.xpath("//html/body/div[1]/div/div[3]/div/div[1]/div"));
+            followUs.findElements(By.xpath("//div/ul/li*"));
+        } catch (NoSuchElementException e){
+            return false;
+        }
+        return true;
     }
 
 
