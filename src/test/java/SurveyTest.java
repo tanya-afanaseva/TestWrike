@@ -13,6 +13,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
 
@@ -42,7 +43,7 @@ public class SurveyTest {
         mainPage.setTrialEmail(email);
         mainPage.clickCreateMyWrikeAccount();
         Thread.sleep(5000);
-        assertTrue(driver.getCurrentUrl().equals("https://www.wrike.com/resend/"));
+        assertTrue("Did not move to /resend", driver.getCurrentUrl().equals("https://www.wrike.com/resend/"));
 
         mainPage.clickAnswerOne(RandomUtils.nextInt(1, 3));
         mainPage.clickAnswerTwo(RandomUtils.nextInt(1, 6));
@@ -55,16 +56,18 @@ public class SurveyTest {
             mainPage.clickAnswerThreeOther(other);
         }
 
-        mainPage.clickSubmiteResults();
+        mainPage.clickSubmitResults();
         Thread.sleep(5000);
-        assertTrue(mainPage.isSuccessVisible());
+        assertTrue("Did not submitted", mainPage.isSuccessVisible());
 
         mainPage. clickResendEmail();
         Thread.sleep(5000);
-        assertTrue(mainPage.isAgainVisible());
+        assertTrue("Did not resend", mainPage.isAgainVisible());
 
-        assertTrue(mainPage.isFollowUsVisible());
 
+        assertTrue("No twitter link", mainPage.isTwitter());
+
+        assertTrue("Wrong twitter icon", mainPage.isTwitterIconRight());
     }
 
     @After
